@@ -4,7 +4,7 @@
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
-========         .----------------------.   | === |          ========
+
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||   KICKSTART.NVIM   ||   |-----|          ========
@@ -123,6 +123,7 @@ vim.opt.breakindent = true
 
 -- Save undo history
 vim.opt.undofile = true
+vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
@@ -199,6 +200,40 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- [[My key remaps]]
+
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+
+vim.keymap.set('n', '<leader><leader>', function()
+  vim.cmd 'so'
+end)
+
+-- move selected block
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv") -- move selected block up
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv") -- move selected block down
+
+-- copy to system clipboard
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('v', '<leader>y', '"+y') -- selected block in visual mode
+vim.keymap.set('n', '<leader>Y', '"+Y') -- current line in normal mode
+
+-- scroll up/down keep cursor
+vim.keymap.set('n', '<C-d>', '<C-d>zz') -- scroll down
+vim.keymap.set('n', '<C-u>', '<C-u>zz') -- scroll up
+
+-- scroll with search
+vim.keymap.set('n', 'n', 'nzzzv') -- next find
+vim.keymap.set('n', 'N', 'Nzzzv') -- prev find
+
+-- replace keeping buffer
+vim.keymap.set('x', '<leader>p', '"_dP')
+
+-- remap Esc to ctrl+c
+vim.keymap.set('i', '<C-c>', '<Esc>')
+
+-- replace word under cursor
+vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -873,11 +908,11 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'neanias/everforest-nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('everforest').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
@@ -886,7 +921,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'everforest'
     end,
   },
 
@@ -976,7 +1011,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
